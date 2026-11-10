@@ -81,8 +81,8 @@ export default {
     const upgradeHeader = request.headers.get("Upgrade") || "";
     if (
       upgradeHeader.toLowerCase() === "websocket" ||
-      url.pathname === "/api/rooms" ||
-      url.pathname === "/api/info"
+      url.pathname.startsWith("/api/") ||
+      url.pathname === "/ws"
     ) {
       const id = env.RELAY_HUB.idFromName("global-metalslug-hub");
       const stub = env.RELAY_HUB.get(id);

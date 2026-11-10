@@ -549,7 +549,11 @@
       </select>
 
       <button id="btn-coin" class="bar-btn coin" title="Insert Arcade Coin (Shortcut: 5 or Shift)">
-        🪙 Insert Coin
+        <svg class="coin-icon" viewBox="0 0 24 24" width="15" height="15" style="vertical-align: -2px; margin-right: 3px;" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#fde047" stroke-width="1.8"/>
+          <circle cx="12" cy="12" r="7.5" fill="none" stroke="#d97706" stroke-width="1.2" stroke-dasharray="2.5 1.5"/>
+          <rect x="10.8" y="6.5" width="2.4" height="11" rx="1.2" fill="#78350f"/>
+        </svg>Insert Coin
       </button>
       <button id="btn-start-p1" class="bar-btn start-btn" title="Start Player 1 (Shortcut: 1 or Enter)">
         ▶️ Start
@@ -741,7 +745,7 @@
         <div><kbd>I</kbd> or <kbd>V</kbd> or <kbd>Space</kbd></div>
         <div>LB / LT (<kbd>Num 4</kbd>)</div>
 
-        <div>🪙 Insert Coin</div>
+        <div>🟡 Insert Coin</div>
         <div><kbd>5</kbd> or <kbd>Backspace</kbd></div>
         <div>Select / Back (<kbd>Num 0</kbd>)</div>
 
@@ -1685,7 +1689,7 @@
           game: game || currentGame,
           role: role || "auto",
         });
-        return `${wsBase}/?${params.toString()}`;
+        return `${wsBase}/api/ws?${params.toString()}`;
       }
 
       function disconnectRoom(notify = true) {
@@ -2029,7 +2033,7 @@
         syncAudioGain();
         pulseCoinFramesP1 = 6;
         if (myRole === 0) pulseCoinFramesP2 = 6;
-        showToast("🪙 Coin Inserted!");
+        showToast("🟡 Coin Inserted!");
         document.getElementById("canvas")?.focus();
       });
 
