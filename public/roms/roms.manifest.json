@@ -1,0 +1,33 @@
+{
+  "neogeo": {
+    "name": "neogeo.zip",
+    "size": 135445,
+    "crc32": "8ebf4325",
+    "chunked": false,
+    "url": "/roms/neogeo.zip"
+  },
+  "mslug": {
+    "name": "mslug.zip",
+    "size": 13240720,
+    "crc32": "53e49e53",
+    "chunked": false,
+    "url": "/roms/mslug.zip"
+  },
+  "mslug2": {
+    "name": "mslug2.zip",
+    "size": 17604468,
+    "crc32": "44914fe0",
+    "chunked": false,
+    "url": "/roms/mslug2.zip"
+  },
+  "mslug3": {
+    "name": "mslug3.zip",
+    "size": 37277706,
+    "crc32": "0a260943",
+    "chunked": true,
+    "chunks": [
+      "/roms/chunks/mslug3.zip.part00",
+      "/roms/chunks/mslug3.zip.part01"
+    ]
+  }
+}

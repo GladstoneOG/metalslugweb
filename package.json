@@ -1,0 +1,24 @@
+{
+  "name": "metalslug-web",
+  "version": "1.0.0",
+  "description": "Metal Slug 1, 2 & 3 Browser Port with 2-Player Online Co-op (Cloudflare Workers + Durable Objects + WebRTC + FBNeo WASM)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:roms": "python tools/build_web_roms.py",
+    "cf:dev": "npx wrangler dev",
+    "cf:deploy": "npx wrangler deploy"
+  },
+  "keywords": [
+    "metal-slug",
+    "neogeo",
+    "fbneo",
+    "wasm",
+    "multiplayer",
+    "co-op",
+    "cloudflare-workers",
+    "durable-objects",
+    "webrtc"
+  ],
+  "license": "MIT"
+}

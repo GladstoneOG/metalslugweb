@@ -1,0 +1,22 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "metalslugweb"
+main = "cloudflare_worker.js"
+compatibility_date = "2024-11-01"
+
+# Static game assets (HTML, WASM core, Neo Geo ROMs, artwork)
+# Every file in ./public is <19 MiB to stay well under Cloudflare Workers' 25 MiB per-file limit
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# Durable Object binding for the global 2-Player Co-op Relay & Room Browser
+[durable_objects]
+bindings = [
+  { name = "RELAY_HUB", class_name = "MetalSlugRelayHub" }
+]
+
+# SQLite-backed Durable Objects (compatible with the Cloudflare Workers Free Plan!)
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MetalSlugRelayHub"]

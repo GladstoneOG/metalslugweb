@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>METAL SLUG WEB — Anthology (1, 2 & 3) Online Co-op</title>
+  <link rel="icon" type="image/png" href="assets/splash_snk.png" />
+  <style>
+    :root {
+      --bg-dark: #090b10;
+      --panel-bg: rgba(16, 20, 29, 0.94);
+      --border-steel: rgba(255, 187, 51, 0.28);
+      --accent-gold: #ffbb33;
+      --accent-orange: #ff6b1a;
+      --accent-green: #2ed573;
+      --accent-blue: #38bdf8;
+      --accent-red: #ff4757;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Arcade Command Bar */
+    #top-bar {
+      height: 50px;
+      min-height: 50px;
+      background: linear-gradient(180deg, #161b26 0%, #0d1017 100%);
+      border-bottom: 1px solid var(--border-steel);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      gap: 8px;
+      z-index: 40;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    #top-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .bar-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .brand-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, rgba(255, 187, 51, 0.16), rgba(255, 107, 26, 0.16));
+      border: 1px solid rgba(255, 187, 51, 0.45);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.7px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    .game-select {
+      background: #131824;
+      color: #fff;
+      border: 1px solid rgba(255, 187, 51, 0.5);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .game-select:hover, .game-select:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 8px rgba(255, 187, 51, 0.25);
+    }
+
+    .bar-btn {
+      background: rgba(30, 38, 54, 0.9);
+      color: var(--text-main);
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.14s ease;
+      white-space: nowrap;
+    }
+    .bar-btn:hover {
+      background: rgba(45, 56, 78, 0.95);
+      border-color: rgba(255, 187, 51, 0.55);
+      transform: translateY(-1px);
+    }
+    .bar-btn:active {
+      transform: translateY(0);
+    }
+    .bar-btn.primary {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      border-color: #fbbf24;
+      color: #fff;
+    }
+    .bar-btn.primary:hover {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .bar-btn.coin {
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.2), rgba(234, 179, 8, 0.12));
+      border-color: rgba(250, 204, 21, 0.65);
+      color: #fde047;
+    }
+    .bar-btn.start-btn {
+      background: linear-gradient(135deg, rgba(46, 213, 115, 0.18), rgba(22, 163, 74, 0.12));
+      border-color: rgba(46, 213, 115, 0.6);
+      color: #86efac;
+    }
+    .bar-btn.danger {
+      background: rgba(255, 71, 87, 0.15);
+      border-color: rgba(255, 71, 87, 0.5);
+      color: #fda4af;
+    }
+    .bar-btn.active-toggle {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+      background: rgba(56, 189, 248, 0.14);
+    }
+
+    /* Status Pill */
+    #net-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      color: var(--text-muted);
+    }
+    #net-status-pill.online {
+      border-color: rgba(46, 213, 115, 0.6);
+      color: #86efac;
+      background: rgba(20, 83, 45, 0.35);
+    }
+    #net-status-pill.waiting {
+      border-color: rgba(250, 204, 21, 0.6);
+      color: #fde047;
+      background: rgba(113, 63, 18, 0.35);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+    }
+    #net-status-pill.online .status-dot {
+      background: #2ed573;
+      box-shadow: 0 0 8px #2ed573;
+    }
+    #net-status-pill.waiting .status-dot {
+      background: #facc15;
+      box-shadow: 0 0 8px #facc15;
+    }
+
+    /* Main Arcade Stage */
+    #stage {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: calc(100% - 50px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #141923 0%, #06080c 100%);
+      overflow: hidden;
+    }
+
+    #cabinet-frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: calc((100vh - 50px) * (4 / 3));
+      max-height: calc(100vw * (3 / 4));
+      aspect-ratio: 4 / 3;
+      background: #000;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 187, 51, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      outline: none;
+    }
+
+    /* Optional CRT Scanlines Overlay */
+    #crt-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 12;
+      background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.32) 50%),
+        radial-gradient(circle at center, transparent 68%, rgba(0, 0, 0, 0.42) 100%);
+      background-size: 100% 3px, 100% 100%;
+      display: none;
+    }
+    #crt-overlay.enabled {
+      display: block;
+    }
+
+    /* Boot / Loading Overlay */
+    #loading-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 25;
+      background:
+        linear-gradient(180deg, rgba(9, 11, 16, 0.82) 0%, rgba(9, 11, 16, 0.94) 100%),
+        url("assets/ms1_bg.png") center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      transition: opacity 0.25s ease;
+    }
+    #loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .boot-card {
+      background: rgba(13, 17, 26, 0.92);
+      border: 1px solid rgba(255, 187, 51, 0.45);
+      border-radius: 14px;
+      padding: 28px 32px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+    .boot-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .boot-logos img {
+      height: 36px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+    }
+    .boot-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+      margin: 0 0 6px 0;
+      text-transform: uppercase;
+    }
+    .boot-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0 0 18px 0;
+    }
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #ef4444, #fbbf24);
+      transition: width 0.15s ease;
+    }
+    .boot-detail {
+      margin-top: 10px;
+      font-size: 12px;
+      font-family: Consolas, monospace;
+      color: #cbd5e1;
+    }
+
+    /* Toast Banner */
+    #toast-container {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(15, 23, 42, 0.95);
+      border-left: 4px solid var(--accent-gold);
+      border-top: 1px solid rgba(255,255,255,0.12);
+      border-right: 1px solid rgba(255,255,255,0.12);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
+      animation: toastIn 0.2s ease;
+    }
+    @keyframes toastIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(5, 7, 11, 0.78);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-card {
+      background: #111622;
+      border: 1px solid rgba(255, 187, 51, 0.4);
+      border-radius: 12px;
+      max-width: 540px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      color: var(--text-main);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin: 0;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      color: #fff;
+    }
+
+    .form-row {
+      margin-bottom: 14px;
+    }
+    .form-row label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: #0b0e17;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    .form-input:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .room-list {
+      max-height: 270px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .room-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #171f30;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 8px;
+    }
+    .room-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .room-name {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #f8fafc;
+    }
+    .room-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* Controls Table */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 6px 10px;
+      font-size: 12.5px;
+      background: #0b0f18;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      margin-bottom: 12px;
+    }
+    .controls-grid .hdr {
+      font-weight: 800;
+      color: var(--accent-gold);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      padding-bottom: 4px;
+      margin-bottom: 2px;
+    }
+    kbd {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: Consolas, monospace;
+      font-size: 11.5px;
+      color: #f8fafc;
+    }
+
+    /* Touch Controls Overlay */
+    #touch-controls {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+      display: none;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 20px;
+    }
+    #touch-controls.visible {
+      display: flex;
+    }
+    .touch-cluster {
+      pointer-events: auto;
+      display: grid;
+      gap: 8px;
+    }
+    .dpad-cluster {
+      grid-template-columns: repeat(3, 52px);
+      grid-template-rows: repeat(3, 52px);
+    }
+    .btn-cluster {
+      grid-template-columns: repeat(2, 58px);
+      grid-template-rows: repeat(2, 58px);
+    }
+    .touch-btn {
+      background: rgba(15, 23, 42, 0.68);
+      border: 2px solid rgba(255, 187, 51, 0.55);
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+    }
+    .touch-btn.pressed {
+      background: rgba(255, 187, 51, 0.45);
+      transform: scale(0.95);
+    }
+  </style>
+  <script src="relay_config.js"></script>
+</head>
+<body>
+  <!-- Top Arcade Utility & Co-op Bar -->
+  <header id="top-bar">
+    <div class="bar-group">
+      <div class="brand-badge" title="SNK Neo Geo MVS — FBNeo Deterministic Lockstep Engine">
+        <span>🔥 METAL SLUG WEB</span>
+      </div>
+
+      <select id="game-selector" class="game-select" title="Switch Metal Slug Anthology Game">
+        <option value="mslug">Metal Slug 1 (1996)</option>
+        <option value="mslug2">Metal Slug 2 (1998)</option>
+        <option value="mslug3">Metal Slug 3 (2000)</option>
+      </select>
+
+      <button id="btn-coin" class="bar-btn coin" title="Insert Arcade Coin (Shortcut: 5 or Shift)">
+        🪙 Insert Coin
+      </button>
+      <button id="btn-start-p1" class="bar-btn start-btn" title="Start Player 1 (Shortcut: 1 or Enter)">
+        ▶️ Start
+      </button>
+    </div>
+
+    <div class="bar-group">
+      <div id="net-status-pill" title="Current Co-op Network & Lockstep Status">
+        <span class="status-dot"></span>
+        <span id="net-status-text">Solo / Local 2P</span>
+      </div>
+
+      <button id="btn-host" class="bar-btn primary" title="Host a 2-Player Online Co-op Mission">
+        📡 Host Co-op
+      </button>
+      <button id="btn-browse" class="bar-btn" title="Browse Public Co-op Missions">
+        🌐 Rooms
+      </button>
+      <button id="btn-join" class="bar-btn" title="Join Room by Port">
+        🔗 Join Port
+      </button>
+      <button id="btn-invite" class="bar-btn" style="display:none;" title="Copy Direct Invite Link for Player 2">
+        📋 Invite Link
+      </button>
+      <button id="btn-resync" class="bar-btn" style="display:none;" title="Force Arcade State Synchronization with Player 2">
+        🔄 Sync Now
+      </button>
+      <button id="btn-leave" class="bar-btn danger" style="display:none;" title="Disconnect from Online Co-op Room">
+        ✖ Leave
+      </button>
+    </div>
+
+    <div class="bar-group">
+      <button id="btn-crt" class="bar-btn active-toggle" title="Toggle Arcade CRT Scanlines">
+        📺 CRT
+      </button>
+      <button id="btn-mute" class="bar-btn" title="Toggle Arcade Audio">
+        🔊 Audio
+      </button>
+      <button id="btn-touch" class="bar-btn" title="Toggle On-Screen Touch Gamepad">
+        📱 Touch
+      </button>
+      <button id="btn-controls" class="bar-btn" title="View Keyboard & Gamepad Controls">
+        🎮 Controls
+      </button>
+      <button id="btn-fullscreen" class="bar-btn" title="Toggle Fullscreen Cabinet Mode">
+        ⛶ Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Neo Geo 4:3 Viewport -->
+  <main id="stage">
+    <div id="cabinet-frame">
+      <canvas id="canvas" width="304" height="224" tabindex="0"></canvas>
+      <div id="crt-overlay" class="enabled"></div>
+
+      <!-- Touch Controller Overlay -->
+      <div id="touch-controls">
+        <div class="touch-cluster dpad-cluster">
+          <div></div>
+          <div class="touch-btn" data-bit="4">▲</div>
+          <div></div>
+          <div class="touch-btn" data-bit="6">◀</div>
+          <div></div>
+          <div class="touch-btn" data-bit="7">▶</div>
+          <div></div>
+          <div class="touch-btn" data-bit="5">▼</div>
+          <div></div>
+        </div>
+        <div class="touch-cluster btn-cluster">
+          <div class="touch-btn" data-bit="1">💣 C</div>
+          <div class="touch-btn" data-bit="9">🚜 D</div>
+          <div class="touch-btn" data-bit="0">🔫 A</div>
+          <div class="touch-btn" data-bit="8">🦘 B</div>
+        </div>
+      </div>
+
+      <!-- Boot / ROM Loading Overlay -->
+      <div id="loading-overlay">
+        <div class="boot-card">
+          <div class="boot-logos">
+            <img src="assets/splash_neogeo.png" alt="Neo Geo" />
+            <img src="assets/splash_snk.png" alt="SNK" />
+          </div>
+          <h1 id="boot-title" class="boot-title">Initializing Neo Geo MVS</h1>
+          <p id="boot-sub" class="boot-sub">Preparing FBNeo WebAssembly Core & Arcade ROMs...</p>
+          <div class="progress-track">
+            <div id="boot-progress" class="progress-fill"></div>
+          </div>
+          <div id="boot-detail" class="boot-detail">Checking IndexedDB cache...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Host Co-op Modal -->
+  <div id="modal-host" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">📡 Host 2-Player Online Co-op</h2>
+        <button class="modal-close" data-close="modal-host">&times;</button>
+      </div>
+      <div class="form-row">
+        <label for="host-room-name">Mission / Room Name</label>
+        <input id="host-room-name" class="form-input" type="text" placeholder="Marco & Tarma Co-op" maxlength="36" />
+      </div>
+      <div class="form-row">
+        <label for="host-room-port">Room Port (1024 – 65535)</label>
+        <input id="host-room-port" class="form-input" type="number" min="1024" max="65535" value="7777" />
+      </div>
+      <p style="font-size:12px; color:var(--text-muted); margin: 0 0 16px 0;">
+        You will be <strong>Player 1 (Host)</strong>. As soon as Player 2 joins your room or opens your invite link, your live Neo Geo machine state is compressed and synced so Player 2 can insert a coin and press Start immediately!
+      </p>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="bar-btn" data-close="modal-host">Cancel</button>
+        <button id="btn-confirm-host" class="bar-btn primary">Create Room & Copy Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Browse Rooms Modal -->
+  <div id="modal-browse" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">🌐 Active Co-op Missions</h2>
+        <button class="modal-close" data-close="modal-browse">&times;</button>
+      </div>
+      <div id="room-list" class="room-list">
+        <div style="text-align:center; padding:20px; color:var(--text-muted);">Scanning relay hub...</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <button id="btn-refresh-rooms" class="bar-btn">🔄 Refresh List</button>
+        <button class="bar-btn" data-close="modal-browse">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Join by Port Modal -->
+  <div id="modal-join" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">🔗 Join Co-op Room by Port</h2>
+        <button class="modal-close" data-close="modal-join">&times;</button>
+      </div>
+      <div class="form-row">
+        <label for="join-room-port">Room Port (1024 – 65535)</label>
+        <input id="join-room-port" class="form-input" type="number" min="1024" max="65535" value="7777" />
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="bar-btn" data-close="modal-join">Cancel</button>
+        <button id="btn-confirm-join" class="bar-btn primary">Join as Player 2</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls Modal -->
+  <div id="modal-controls" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">🎮 Neo Geo Arcade Controls</h2>
+        <button class="modal-close" data-close="modal-controls">&times;</button>
+      </div>
+      <p style="font-size:12.5px; color:var(--text-muted); margin-top:0;">
+        In <strong>Online Co-op</strong>, both Player 1 and Player 2 can use the primary controls (<kbd>WASD</kbd> or <kbd>Arrows</kbd> + <kbd>J</kbd><kbd>K</kbd><kbd>L</kbd><kbd>I</kbd> or <kbd>Z</kbd><kbd>X</kbd><kbd>C</kbd><kbd>V</kbd> or any USB/Bluetooth Gamepad).
+      </p>
+      <div class="controls-grid">
+        <div class="hdr">Arcade Action</div>
+        <div class="hdr">Primary Keys (Online / P1)</div>
+        <div class="hdr">Gamepad / Local P2</div>
+
+        <div>Move / Aim</div>
+        <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrows</kbd></div>
+        <div>D-Pad / Left Stick</div>
+
+        <div>🔫 Fire Weapon (A)</div>
+        <div><kbd>J</kbd> or <kbd>Z</kbd></div>
+        <div>Button West / South (<kbd>Num 1</kbd>)</div>
+
+        <div>🦘 Jump (B)</div>
+        <div><kbd>K</kbd> or <kbd>X</kbd></div>
+        <div>Button South / East (<kbd>Num 2</kbd>)</div>
+
+        <div>💣 Grenade / Bomb (C)</div>
+        <div><kbd>L</kbd> or <kbd>C</kbd> or <kbd>U</kbd></div>
+        <div>Button North / RB (<kbd>Num 3</kbd>)</div>
+
+        <div>🚜 Slug Attack / Eject (D)</div>
+        <div><kbd>I</kbd> or <kbd>V</kbd> or <kbd>Space</kbd></div>
+        <div>LB / LT (<kbd>Num 4</kbd>)</div>
+
+        <div>🪙 Insert Coin</div>
+        <div><kbd>5</kbd> or <kbd>Backspace</kbd></div>
+        <div>Select / Back (<kbd>Num 0</kbd>)</div>
+
+        <div>▶️ Start Game</div>
+        <div><kbd>1</kbd> or <kbd>Enter</kbd></div>
+        <div>Start (<kbd>Num Enter</kbd>)</div>
+      </div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="bar-btn primary" data-close="modal-controls">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <!-- Pre-load patched FBNeo Libretro Emscripten Runtime -->
+  <script src="cores/fbneo_libretro.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      // =========================================================================
+      // 1. CONSTANTS & PROTOCOL DEFINITIONS
+      // =========================================================================
+      const DB_NAME = "metalslug-cache-v1";
+      const DB_STORE = "blobs";
+      const CORE_CACHE_KEY = "fbneo_libretro.wasm.v2";
+
+      const GAME_TITLES = {
+        mslug: "Metal Slug 1 (1996)",
+        mslug2: "Metal Slug 2 (1998)",
+        mslug3: "Metal Slug 3 (2000)",
+      };
+      const GAME_BGS = {
+        mslug: "assets/ms1_bg.png",
+        mslug2: "assets/ms2_bg.png",
+        mslug3: "assets/ms3_bg.png",
+      };
+
+      // Relay Wire Frames (matches cloudflare_worker.js & server.js)
+      const FRAME_DATA = 0x01;
+      const FRAME_PEER_CONNECTED = 0x02;
+      const FRAME_PEER_DISCONNECTED = 0x03;
+      const FRAME_ROOM_INFO = 0x04;
+      const FRAME_HOST_ASSIGNED = 0x05;
+      const FRAME_UPDATE_ROOM = 0x06;
+      const FRAME_REJECTED = 0xff;
+
+      // Peer-to-Peer Inner Packet Types (inside FRAME_DATA = 0x01)
+      const PKT_INPUT = 0x10;
+      const PKT_PING = 0x11;
+      const PKT_PONG = 0x12;
+      const PKT_READY = 0x15;
+      const PKT_STATE_START = 0x20;
+      const PKT_STATE_CHUNK = 0x21;
+      const PKT_STATE_ACK = 0x22;
+      const PKT_SIGNAL = 0x30;
+      const PKT_GAME_SWITCH = 0x40;
+
+      // RetroArch / FBNeo Joypad Indices
+      // 0=B(Fire), 1=Y(Bomb), 2=Select(Coin), 3=Start, 4=Up, 5=Down, 6=Left, 7=Right, 8=A(Jump), 9=X(Slug)
+      const NUM_BUTTONS = 10;
+      const STATE_CHUNK_SIZE = 32 * 1024; // 32 KB per WebSocket frame
+
+      // =========================================================================
+      // 2. APPLICATION STATE
+      // =========================================================================
+      const urlParams = new URLSearchParams(window.location.search);
+      let currentGame = ["mslug", "mslug2", "mslug3"].includes(urlParams.get("game"))
+        ? urlParams.get("game")
+        : "mslug";
+
+      let romManifest = null;
+      let cachedWasmBinary = null;
+      let cachedNeogeoZip = null;
+      const cachedGameZips = new Map();
+
+      // Active Emulator Instance & C-wrapped Functions
+      let activeModule = null;
+      let fnSimulateInput = null;
+      let fnSaveStateInfo = null;
+      let fnLoadState = null;
+      let emulatorReady = false;
+      let audioMuted = false;
+
+      // Input State
+      const keysDown = new Set();
+      let touchMask = 0;
+      let pulseCoinFramesP1 = 0;
+      let pulseStartFramesP1 = 0;
+      let pulseCoinFramesP2 = 0;
+      let pulseStartFramesP2 = 0;
+      let appliedPortMask = [0, 0];
+
+      // Co-op Networking & Lockstep State
+      let ws = null;
+      let roomPort = null;
+      let roomName = "";
+      let myRole = 0; // 0 = solo, 1 = Host (P1), 2 = Client (P2)
+      let peerConnected = false;
+      let peerReady = false;
+      let coopLocked = false; // true once initial state sync completes
+      let syncInProgress = false;
+
+      let netFrame = 0;
+      let inputDelay = 2; // 2 frames (33ms) default lockstep window
+      let peerLatestFrame = 0;
+      let lastInputSentAt = 0;
+      const p1Inputs = new Map();
+      const p2Inputs = new Map();
+
+      // Incoming Save State Reassembly Buffer
+      let incomingStateMeta = null;
+      let incomingStateChunks = [];
+      let incomingStateReceived = 0;
+
+      // WebRTC P2P Upgrade (Low-latency UDP-style DataChannel for input packets)
+      let rtcPeer = null;
+      let rtcChannel = null;
+      let rtcOpen = false;
+      let rttMs = 0;
+      let pingInterval = null;
+
+      // =========================================================================
+      // 3. UI HELPERS & TOASTS
+      // =========================================================================
+      const elGameSelect = document.getElementById("game-selector");
+      const elLoadingOverlay = document.getElementById("loading-overlay");
+      const elBootTitle = document.getElementById("boot-title");
+      const elBootSub = document.getElementById("boot-sub");
+      const elBootProgress = document.getElementById("boot-progress");
+      const elBootDetail = document.getElementById("boot-detail");
+      const elStatusPill = document.getElementById("net-status-pill");
+      const elStatusText = document.getElementById("net-status-text");
+      const elBtnInvite = document.getElementById("btn-invite");
+      const elBtnResync = document.getElementById("btn-resync");
+      const elBtnLeave = document.getElementById("btn-leave");
+
+      elGameSelect.value = currentGame;
+
+      function showToast(msg) {
+        const container = document.getElementById("toast-container");
+        const div = document.createElement("div");
+        div.className = "toast";
+        div.textContent = msg;
+        container.appendChild(div);
+        setTimeout(() => {
+          div.style.opacity = "0";
+          div.style.transition = "opacity 0.25s";
+          setTimeout(() => div.remove(), 260);
+        }, 3400);
+      }
+
+      function setBootStatus(title, sub, pct, detail) {
+        elLoadingOverlay.classList.remove("hidden");
+        if (title !== null) elBootTitle.textContent = title;
+        if (sub !== null) elBootSub.textContent = sub;
+        if (pct !== null) elBootProgress.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+        if (detail !== null) elBootDetail.textContent = detail;
+      }
+
+      function hideBootOverlay() {
+        elLoadingOverlay.classList.add("hidden");
+        const canvas = document.getElementById("canvas");
+        if (canvas) canvas.focus();
+      }
+
+      function updateNetworkUI() {
+        if (myRole === 0) {
+          elStatusPill.className = "";
+          elStatusText.textContent = "Solo / Local 2P";
+          elBtnInvite.style.display = "none";
+          elBtnResync.style.display = "none";
+          elBtnLeave.style.display = "none";
+          return;
+        }
+
+        elBtnInvite.style.display = "inline-flex";
+        elBtnLeave.style.display = "inline-flex";
+        elBtnResync.style.display = myRole === 1 && peerConnected ? "inline-flex" : "none";
+
+        const roleLabel = myRole === 1 ? "P1 Host" : "P2 Client";
+        if (!peerConnected) {
+          elStatusPill.className = "waiting";
+          elStatusText.textContent = `Room #${roomPort} (${roleLabel}) • Waiting for P2...`;
+        } else if (syncInProgress || !coopLocked) {
+          elStatusPill.className = "waiting";
+          elStatusText.textContent = `Room #${roomPort} (${roleLabel}) • Syncing Arcade State...`;
+        } else {
+          elStatusPill.className = "online";
+          const transport = rtcOpen ? "P2P" : "Relay";
+          const pingStr = rttMs > 0 ? ` • ${rttMs}ms` : "";
+          elStatusText.textContent = `Room #${roomPort} (${roleLabel} • ${transport}${pingStr})`;
+        }
+      }
+
+      // =========================================================================
+      // 4. INDEXEDDB CACHE & GZIP STREAM UTILITIES
+      // =========================================================================
+      function openCacheDB() {
+        return new Promise((resolve, reject) => {
+          const req = indexedDB.open(DB_NAME, 1);
+          req.onupgradeneeded = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains(DB_STORE)) {
+              db.createObjectStore(DB_STORE);
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      async function idbGet(key) {
+        try {
+          const db = await openCacheDB();
+          return await new Promise((resolve, reject) => {
+            const tx = db.transaction(DB_STORE, "readonly");
+            const req = tx.objectStore(DB_STORE).get(key);
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => reject(req.error);
+          });
+        } catch (_) {
+          return null;
+        }
+      }
+
+      async function idbSet(key, val) {
+        try {
+          const db = await openCacheDB();
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(DB_STORE, "readwrite");
+            tx.objectStore(DB_STORE).put(val, key);
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+          });
+        } catch (_) {}
+      }
+
+      async function gzipCompress(uint8) {
+        const cs = new CompressionStream("gzip");
+        const writer = cs.writable.getWriter();
+        writer.write(uint8);
+        writer.close();
+        const buf = await new Response(cs.readable).arrayBuffer();
+        return new Uint8Array(buf);
+      }
+
+      async function gzipDecompress(uint8) {
+        const ds = new DecompressionStream("gzip");
+        const writer = ds.writable.getWriter();
+        writer.write(uint8);
+        writer.close();
+        const buf = await new Response(ds.readable).arrayBuffer();
+        return new Uint8Array(buf);
+      }
+
+      async function fetchWithProgress(url, onProgress) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
+        const total = Number.parseInt(res.headers.get("Content-Length") || "0", 10);
+        if (!res.body || !total) {
+          const buf = await res.arrayBuffer();
+          if (onProgress) onProgress(buf.byteLength, buf.byteLength);
+          return new Uint8Array(buf);
+        }
+        const reader = res.body.getReader();
+        const chunks = [];
+        let loaded = 0;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          loaded += value.byteLength;
+          if (onProgress) onProgress(loaded, total);
+        }
+        const out = new Uint8Array(loaded);
+        let offset = 0;
+        for (const c of chunks) {
+          out.set(c, offset);
+          offset += c.byteLength;
+        }
+        return out;
+      }
+
+      async function loadRomArchive(romKey, pctStart, pctEnd) {
+        if (!romManifest) {
+          const res = await fetch("roms/roms.manifest.json");
+          romManifest = await res.json();
+        }
+        const entry = romManifest[romKey];
+        if (!entry) throw new Error(`Missing manifest entry for ${romKey}`);
+
+        const cacheKey = `rom.${romKey}.${entry.crc32}`;
+        const cached = await idbGet(cacheKey);
+        if (cached && cached.byteLength === entry.size) {
+          setBootStatus(null, null, pctEnd, `Loaded ${entry.name} from cache`);
+          return new Uint8Array(cached);
+        }
+
+        let resultBytes;
+        if (entry.chunked && Array.isArray(entry.chunks)) {
+          const totalBytes = entry.size;
+          let downloaded = 0;
+          const parts = [];
+          for (let i = 0; i < entry.chunks.length; i++) {
+            const chunkUrl = entry.chunks[i].replace(/^\//, "");
+            const part = await fetchWithProgress(chunkUrl, (loaded) => {
+              const curr = downloaded + loaded;
+              const ratio = Math.min(1, curr / totalBytes);
+              const pct = pctStart + ratio * (pctEnd - pctStart);
+              setBootStatus(
+                null,
+                null,
+                pct,
+                `Downloading ${entry.name} (Part ${i + 1}/${entry.chunks.length}) — ${(curr / 1048576).toFixed(1)} / ${(totalBytes / 1048576).toFixed(1)} MiB`
+              );
+            });
+            downloaded += part.byteLength;
+            parts.push(part);
+          }
+          resultBytes = new Uint8Array(totalBytes);
+          let offset = 0;
+          for (const p of parts) {
+            resultBytes.set(p, offset);
+            offset += p.byteLength;
+          }
+        } else {
+          const romUrl = entry.url.replace(/^\//, "");
+          resultBytes = await fetchWithProgress(romUrl, (loaded, total) => {
+            const ratio = total ? loaded / total : 0.5;
+            const pct = pctStart + ratio * (pctEnd - pctStart);
+            setBootStatus(
+              null,
+              null,
+              pct,
+              `Downloading ${entry.name} — ${(loaded / 1048576).toFixed(1)} / ${(entry.size / 1048576).toFixed(1)} MiB`
+            );
+          });
+        }
+
+        await idbSet(cacheKey, resultBytes);
+        return resultBytes;
+      }
+
+      async function ensureCoreWasmLoaded() {
+        if (cachedWasmBinary) return cachedWasmBinary;
+        const fromIdb = await idbGet(CORE_CACHE_KEY);
+        if (fromIdb && fromIdb.byteLength > 40000000) {
+          cachedWasmBinary = new Uint8Array(fromIdb);
+          setBootStatus(null, null, 35, "Loaded FBNeo WASM Core from IndexedDB");
+          return cachedWasmBinary;
+        }
+
+        const gzBytes = await fetchWithProgress("cores/fbneo_libretro.wasm.bin", (loaded, total) => {
+          const ratio = total ? loaded / total : 0.5;
+          setBootStatus(
+            null,
+            null,
+            5 + ratio * 25,
+            `Downloading FBNeo Arcade Core — ${(loaded / 1048576).toFixed(1)} MiB`
+          );
+        });
+        setBootStatus(null, null, 32, "Decompressing 43 MiB FBNeo WebAssembly Engine...");
+        cachedWasmBinary = await gzipDecompress(gzBytes);
+        await idbSet(CORE_CACHE_KEY, cachedWasmBinary);
+        return cachedWasmBinary;
+      }
+
+      // =========================================================================
+      // 5. HARDWARE INPUT SAMPLING & EMULATOR PORT INJECTION
+      // =========================================================================
+      function samplePlayer1LocalMask() {
+        let mask = touchMask;
+
+        // Keyboard mapping (Primary Controls: WASD or Arrows + J/K/L/I or Z/X/C/V)
+        const inSoloMode = myRole === 0;
+        if (keysDown.has("KeyW") || (!inSoloMode && keysDown.has("ArrowUp"))) mask |= 1 << 4;
+        if (keysDown.has("KeyS") || (!inSoloMode && keysDown.has("ArrowDown"))) mask |= 1 << 5;
+        if (keysDown.has("KeyA") || (!inSoloMode && keysDown.has("ArrowLeft"))) mask |= 1 << 6;
+        if (keysDown.has("KeyD") || (!inSoloMode && keysDown.has("ArrowRight"))) mask |= 1 << 7;
+
+        // Solo mode also allows Arrow keys for P1 unless Numpad keys are used
+        if (inSoloMode) {
+          if (keysDown.has("ArrowUp")) mask |= 1 << 4;
+          if (keysDown.has("ArrowDown")) mask |= 1 << 5;
+          if (keysDown.has("ArrowLeft")) mask |= 1 << 6;
+          if (keysDown.has("ArrowRight")) mask |= 1 << 7;
+        }
+
+        // Buttons: 0=Fire(A), 8=Jump(B), 1=Bomb(C), 9=Slug(D)
+        if (keysDown.has("KeyJ") || keysDown.has("KeyZ")) mask |= 1 << 0;
+        if (keysDown.has("KeyK") || keysDown.has("KeyX")) mask |= 1 << 8;
+        if (keysDown.has("KeyL") || keysDown.has("KeyC") || keysDown.has("KeyU")) mask |= 1 << 1;
+        if (keysDown.has("KeyI") || keysDown.has("KeyV") || keysDown.has("Space")) mask |= 1 << 9;
+
+        // Coin (Select = bit 2) & Start (bit 3)
+        if (keysDown.has("Digit5") || keysDown.has("Backspace") || keysDown.has("ShiftRight")) mask |= 1 << 2;
+        if (keysDown.has("Digit1") || keysDown.has("Enter")) mask |= 1 << 3;
+
+        if (pulseCoinFramesP1 > 0) {
+          mask |= 1 << 2;
+          pulseCoinFramesP1--;
+        }
+        if (pulseStartFramesP1 > 0) {
+          mask |= 1 << 3;
+          pulseStartFramesP1--;
+        }
+
+        // Gamepad 0
+        const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+        const gp = gamepads[0];
+        if (gp && gp.connected) {
+          const axX = gp.axes[0] || 0;
+          const axY = gp.axes[1] || 0;
+          if (axY < -0.45 || gp.buttons[12]?.pressed) mask |= 1 << 4;
+          if (axY > 0.45 || gp.buttons[13]?.pressed) mask |= 1 << 5;
+          if (axX < -0.45 || gp.buttons[14]?.pressed) mask |= 1 << 6;
+          if (axX > 0.45 || gp.buttons[15]?.pressed) mask |= 1 << 7;
+
+          if (gp.buttons[2]?.pressed) mask |= 1 << 0; // X / Square -> Fire
+          if (gp.buttons[0]?.pressed) mask |= 1 << 8; // A / Cross -> Jump
+          if (gp.buttons[3]?.pressed || gp.buttons[5]?.pressed) mask |= 1 << 1; // Y / RB -> Bomb
+          if (gp.buttons[1]?.pressed || gp.buttons[4]?.pressed) mask |= 1 << 9; // B / LB -> Slug
+          if (gp.buttons[8]?.pressed) mask |= 1 << 2; // Select -> Coin
+          if (gp.buttons[9]?.pressed) mask |= 1 << 3; // Start
+        }
+
+        return mask & 0x3ff;
+      }
+
+      function samplePlayer2LocalMask() {
+        let mask = 0;
+        if (keysDown.has("Numpad8")) mask |= 1 << 4;
+        if (keysDown.has("Numpad5") || keysDown.has("Numpad2")) mask |= 1 << 5;
+        if (keysDown.has("Numpad4")) mask |= 1 << 6;
+        if (keysDown.has("Numpad6")) mask |= 1 << 7;
+
+        if (keysDown.has("Numpad1")) mask |= 1 << 0;
+        if (keysDown.has("Numpad2")) mask |= 1 << 8;
+        if (keysDown.has("Numpad3")) mask |= 1 << 1;
+        if (keysDown.has("Numpad0")) mask |= 1 << 2;
+        if (keysDown.has("NumpadEnter") || keysDown.has("Digit2")) mask |= 1 << 3;
+
+        if (pulseCoinFramesP2 > 0) {
+          mask |= 1 << 2;
+          pulseCoinFramesP2--;
+        }
+        if (pulseStartFramesP2 > 0) {
+          mask |= 1 << 3;
+          pulseStartFramesP2--;
+        }
+
+        const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+        const gp = gamepads[1];
+        if (gp && gp.connected) {
+          const axX = gp.axes[0] || 0;
+          const axY = gp.axes[1] || 0;
+          if (axY < -0.45 || gp.buttons[12]?.pressed) mask |= 1 << 4;
+          if (axY > 0.45 || gp.buttons[13]?.pressed) mask |= 1 << 5;
+          if (axX < -0.45 || gp.buttons[14]?.pressed) mask |= 1 << 6;
+          if (axX > 0.45 || gp.buttons[15]?.pressed) mask |= 1 << 7;
+
+          if (gp.buttons[2]?.pressed) mask |= 1 << 0;
+          if (gp.buttons[0]?.pressed) mask |= 1 << 8;
+          if (gp.buttons[3]?.pressed || gp.buttons[5]?.pressed) mask |= 1 << 1;
+          if (gp.buttons[1]?.pressed || gp.buttons[4]?.pressed) mask |= 1 << 9;
+          if (gp.buttons[8]?.pressed) mask |= 1 << 2;
+          if (gp.buttons[9]?.pressed) mask |= 1 << 3;
+        }
+
+        return mask & 0x3ff;
+      }
+
+      function applyControllerPortMask(port, mask) {
+        if (!fnSimulateInput) return;
+        const prev = appliedPortMask[port];
+        const diff = prev ^ mask;
+        if (diff === 0) return;
+        for (let bit = 0; bit < NUM_BUTTONS; bit++) {
+          if (diff & (1 << bit)) {
+            fnSimulateInput(port, bit, (mask >> bit) & 1);
+          }
+        }
+        appliedPortMask[port] = mask;
+      }
+
+      // =========================================================================
+      // 6. DETERMINISTIC LOCKSTEP & STATE SYNC ENGINE
+      // =========================================================================
+      function resetNetplayQueues() {
+        netFrame = 0;
+        peerLatestFrame = 0;
+        p1Inputs.clear();
+        p2Inputs.clear();
+        // Pre-seed frames 0..inputDelay with neutral (0) inputs for both players
+        for (let f = 0; f <= inputDelay; f++) {
+          p1Inputs.set(f, 0);
+          p2Inputs.set(f, 0);
+        }
+        applyControllerPortMask(0, 0);
+        applyControllerPortMask(1, 0);
+      }
+
+      function sendInputPacket(frameNum, mask) {
+        const prevFrame = Math.max(0, frameNum - 1);
+        const prevMask = (myRole === 1 ? p1Inputs.get(prevFrame) : p2Inputs.get(prevFrame)) || 0;
+        const buf = new ArrayBuffer(14);
+        const view = new DataView(buf);
+        view.setUint8(0, FRAME_DATA);
+        view.setUint8(1, PKT_INPUT);
+        view.setUint32(2, frameNum, true);
+        view.setUint16(6, mask, true);
+        view.setUint32(8, prevFrame, true);
+        view.setUint16(12, prevMask, true);
+        const bytes = new Uint8Array(buf);
+
+        // Send over low-latency WebRTC DataChannel if open, AND fallback/mirror to WebSocket
+        if (rtcOpen && rtcChannel && rtcChannel.readyState === "open") {
+          try {
+            rtcChannel.send(bytes);
+          } catch (_) {}
+        }
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(bytes);
+        }
+        lastInputSentAt = performance.now();
+      }
+
+      function sendReliablePeerPacket(pktType, payloadObjOrBytes) {
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        let body;
+        if (payloadObjOrBytes instanceof Uint8Array) {
+          body = payloadObjOrBytes;
+        } else {
+          body = new TextEncoder().encode(JSON.stringify(payloadObjOrBytes || {}));
+        }
+        const out = new Uint8Array(2 + body.length);
+        out[0] = FRAME_DATA;
+        out[1] = pktType;
+        out.set(body, 2);
+        ws.send(out);
+      }
+
+      function captureRawSaveState() {
+        if (!fnSaveStateInfo || !activeModule) return null;
+        const infoStr = fnSaveStateInfo();
+        const parts = String(infoStr || "").split("|");
+        if (parts[2] !== "1") return null;
+        const size = Number.parseInt(parts[0], 10);
+        const ptr = Number.parseInt(parts[1], 10);
+        if (!size || !ptr) return null;
+        return new Uint8Array(activeModule.HEAPU8.buffer.slice(ptr, ptr + size));
+      }
+
+      function loadRawSaveStateAndFlush(rawStateBytes) {
+        if (!activeModule || !fnLoadState) return false;
+        applyControllerPortMask(0, 0);
+        applyControllerPortMask(1, 0);
+        activeModule.FS.writeFile("/coop_sync.state", rawStateBytes);
+        fnLoadState("/coop_sync.state", 0);
+        // Execute exactly 1 RetroArch tick with zero input so task_load_handler applies the state immediately
+        if (activeModule.callUserCallback && activeModule.MainLoop && activeModule.MainLoop.func) {
+          activeModule.callUserCallback(activeModule.MainLoop.func);
+        }
+        return true;
+      }
+
+      async function hostBroadcastSaveState() {
+        if (myRole !== 1 || !peerConnected || !emulatorReady || syncInProgress) return;
+        try {
+          syncInProgress = true;
+          coopLocked = false;
+          updateNetworkUI();
+
+          const rawState = captureRawSaveState();
+          if (!rawState) {
+            syncInProgress = false;
+            showToast("⚠️ Could not capture arcade state yet — try again in a moment.");
+            return;
+          }
+
+          // Re-load the exact captured state on Host too so Host & Client have 100% identical post-load state
+          loadRawSaveStateAndFlush(rawState);
+          resetNetplayQueues();
+
+          const compressed = await gzipCompress(rawState);
+          const totalChunks = Math.ceil(compressed.byteLength / STATE_CHUNK_SIZE);
+
+          sendReliablePeerPacket(PKT_STATE_START, {
+            game: currentGame,
+            rawSize: rawState.byteLength,
+            compressedSize: compressed.byteLength,
+            totalChunks,
+            inputDelay,
+          });
+
+          for (let idx = 0; idx < totalChunks; idx++) {
+            const slice = compressed.subarray(idx * STATE_CHUNK_SIZE, (idx + 1) * STATE_CHUNK_SIZE);
+            const chunkBuf = new Uint8Array(2 + slice.byteLength);
+            chunkBuf[0] = idx & 0xff;
+            chunkBuf[1] = (idx >> 8) & 0xff;
+            chunkBuf.set(slice, 2);
+            sendReliablePeerPacket(PKT_STATE_CHUNK, chunkBuf);
+          }
+        } catch (err) {
+          console.error("State sync failed:", err);
+          syncInProgress = false;
+          updateNetworkUI();
+        }
+      }
+
+      /**
+       * Called by Emscripten MainLoop.runIter before every single 60Hz frame.
+       * Returning `false` pauses the emulator for this tick without advancing the CPU.
+       */
+      function onPreMainLoop() {
+        if (!emulatorReady) return true;
+
+        // 1. Solo / Local 2-Player Mode
+        if (myRole === 0 || !peerConnected) {
+          const p1 = samplePlayer1LocalMask();
+          const p2 = samplePlayer2LocalMask();
+          applyControllerPortMask(0, p1);
+          applyControllerPortMask(1, p2);
+          return true;
+        }
+
+        // 2. Online Co-op Mode: Hold emulator while save-state transfer is in flight
+        if (syncInProgress || !coopLocked) {
+          return false;
+        }
+
+        const f = netFrame;
+        const targetFrame = f + inputDelay;
+        const myInputsMap = myRole === 1 ? p1Inputs : p2Inputs;
+
+        if (!myInputsMap.has(targetFrame)) {
+          const localMask = samplePlayer1LocalMask();
+          myInputsMap.set(targetFrame, localMask);
+          sendInputPacket(targetFrame, localMask);
+        }
+
+        const p1Mask = p1Inputs.get(f);
+        const p2Mask = p2Inputs.get(f);
+
+        if (p1Mask === undefined || p2Mask === undefined) {
+          // Waiting on peer's input for frame `f`: re-broadcast latest input if >24ms elapsed
+          if (performance.now() - lastInputSentAt > 24) {
+            const latestScheduled = f + inputDelay;
+            const latestMask = myInputsMap.get(latestScheduled) ?? samplePlayer1LocalMask();
+            myInputsMap.set(latestScheduled, latestMask);
+            sendInputPacket(latestScheduled, latestMask);
+          }
+          return false;
+        }
+
+        // Both P1 and P2 inputs for frame `f` are present! Apply deterministically:
+        applyControllerPortMask(0, p1Mask);
+        applyControllerPortMask(1, p2Mask);
+
+        if (f > 60) {
+          p1Inputs.delete(f - 60);
+          p2Inputs.delete(f - 60);
+        }
+        netFrame = f + 1;
+
+        // If peer is ahead of us and we already have inputs for `netFrame`, step 1 catch-up frame
+        if (
+          peerLatestFrame - netFrame >= inputDelay + 2 &&
+          p1Inputs.has(netFrame) &&
+          p2Inputs.has(netFrame) &&
+          activeModule?.callUserCallback &&
+          activeModule?.MainLoop?.func
+        ) {
+          const nf = netFrame;
+          const nextTarget = nf + inputDelay;
+          if (!myInputsMap.has(nextTarget)) {
+            const m = samplePlayer1LocalMask();
+            myInputsMap.set(nextTarget, m);
+            sendInputPacket(nextTarget, m);
+          }
+          applyControllerPortMask(0, p1Inputs.get(nf));
+          applyControllerPortMask(1, p2Inputs.get(nf));
+          netFrame = nf + 1;
+          activeModule.callUserCallback(activeModule.MainLoop.func);
+        }
+
+        return true;
+      }
+
+      // =========================================================================
+      // 7. EMULATOR BOOT & HOT-SWAP ENGINE
+      // =========================================================================
+      function teardownCurrentEmulator() {
+        emulatorReady = false;
+        if (!activeModule) return;
+        try {
+          activeModule.pauseMainLoop?.();
+        } catch (_) {}
+        try {
+          activeModule.removeAllEventListeners?.();
+        } catch (_) {}
+        try {
+          if (activeModule.AL && activeModule.AL.contexts) {
+            for (const id of Object.keys(activeModule.AL.contexts)) {
+              const ctx = activeModule.AL.contexts[id];
+              if (ctx?.interval) clearInterval(ctx.interval);
+              if (ctx?.audioCtx?.close) ctx.audioCtx.close().catch(() => {});
+            }
+          }
+        } catch (_) {}
+        activeModule = null;
+        fnSimulateInput = null;
+        fnSaveStateInfo = null;
+        fnLoadState = null;
+
+        // Replace canvas element so WebGL2 gets a clean context
+        const oldCanvas = document.getElementById("canvas");
+        const newCanvas = document.createElement("canvas");
+        newCanvas.id = "canvas";
+        newCanvas.width = 304;
+        newCanvas.height = 224;
+        newCanvas.tabIndex = 0;
+        oldCanvas.replaceWith(newCanvas);
+      }
+
+      async function bootGame(gameId) {
+        currentGame = gameId;
+        elGameSelect.value = gameId;
+        elLoadingOverlay.style.backgroundImage =
+          `linear-gradient(180deg, rgba(9, 11, 16, 0.82) 0%, rgba(9, 11, 16, 0.94) 100%), url("${GAME_BGS[gameId] || GAME_BGS.mslug}")`;
+
+        teardownCurrentEmulator();
+
+        setBootStatus(
+          `Loading ${GAME_TITLES[gameId]}`,
+          "Preparing SNK Neo Geo MVS Hardware & Arcade ROMs...",
+          5,
+          "Checking cached assets..."
+        );
+
+        try {
+          const wasmBytes = await ensureCoreWasmLoaded();
+          if (!cachedNeogeoZip) {
+            cachedNeogeoZip = await loadRomArchive("neogeo", 35, 42);
+          }
+          if (!cachedGameZips.has(gameId)) {
+            const romBytes = await loadRomArchive(gameId, 42, 88);
+            cachedGameZips.set(gameId, romBytes);
+          }
+          const gameZipBytes = cachedGameZips.get(gameId);
+
+          setBootStatus(null, null, 92, "Initializing FBNeo Libretro WebAssembly Runtime...");
+
+          const canvasEl = document.getElementById("canvas");
+          const mod = await window.EJS_Runtime({
+            wasmBinary: wasmBytes.buffer.slice(
+              wasmBytes.byteOffset,
+              wasmBytes.byteOffset + wasmBytes.byteLength
+            ),
+            canvas: canvasEl,
+            parent: canvasEl.parentElement || document.body,
+            noInitialRun: true,
+            preMainLoop: onPreMainLoop,
+            getSavExt: () => ".srm",
+            callbacks: {
+              setupCoreSettingFile: () => {},
+            },
+            print: () => {},
+            printErr: () => {},
+          });
+
+          activeModule = mod;
+          const FS = mod.FS;
+
+          try { FS.mkdir("/home"); } catch (_) {}
+          try { FS.mkdir("/home/web_user"); } catch (_) {}
+          try { FS.mkdir("/home/web_user/.config"); } catch (_) {}
+          try { FS.mkdir("/home/web_user/.config/retroarch"); } catch (_) {}
+          try { FS.mkdir("/home/web_user/retroarch"); } catch (_) {}
+          try { FS.mkdir("/home/web_user/retroarch/userdata"); } catch (_) {}
+          try { FS.mkdir("/home/web_user/retroarch/userdata/system"); } catch (_) {}
+
+          const retroCfg = [
+            'savestate_file_compression = "false"',
+            'notification_show_save_state = "false"',
+            'notification_show_cheats_applied = "false"',
+            'notification_show_patch_applied = "false"',
+            'notification_show_config_override_load = "false"',
+            'notification_show_remap_load = "false"',
+            'video_vsync = "true"',
+            'audio_latency = "64"',
+            "",
+          ].join("\n");
+          FS.writeFile("/home/web_user/.config/retroarch/retroarch.cfg", retroCfg);
+
+          FS.writeFile("/neogeo.zip", cachedNeogeoZip);
+          FS.writeFile("/home/web_user/retroarch/userdata/system/neogeo.zip", cachedNeogeoZip);
+          FS.writeFile(`/${gameId}.zip`, gameZipBytes);
+
+          setBootStatus(null, null, 98, `Booting ${GAME_TITLES[gameId]}...`);
+
+          mod.callMain([`/${gameId}.zip`]);
+          mod.resumeMainLoop();
+
+          // Disable RetroArch's raw DOM keyboard listener so all inputs flow deterministically through simulate_input
+          mod._ejs_set_keyboard_enabled?.(0);
+
+          fnSimulateInput = mod.cwrap("simulate_input", "null", ["number", "number", "number"]);
+          fnSaveStateInfo = mod.cwrap("save_state_info", "string", []);
+          fnLoadState = mod.cwrap("load_state", "number", ["string", "number"]);
+          appliedPortMask = [0, 0];
+          emulatorReady = true;
+          syncAudioGain();
+
+          hideBootOverlay();
+
+          // If connected in Online Co-op, notify peer that our ROM is booted and ready
+          if (myRole !== 0 && peerConnected) {
+            sendReliablePeerPacket(PKT_READY, { game: currentGame });
+            if (myRole === 1 && peerReady) {
+              setTimeout(() => hostBroadcastSaveState(), 180);
+            }
+          }
+        } catch (err) {
+          console.error("Boot failed:", err);
+          setBootStatus("Arcade Boot Error", err.message || String(err), 100, "Please refresh the page.");
+        }
+      }
+
+      function syncAudioGain() {
+        try {
+          if (activeModule?.AL?.currentCtx?.gain?.gain) {
+            activeModule.AL.currentCtx.gain.gain.value = audioMuted ? 0 : 1;
+          }
+          if (activeModule?.AL?.currentCtx?.audioCtx?.state === "suspended") {
+            activeModule.AL.currentCtx.audioCtx.resume().catch(() => {});
+          }
+        } catch (_) {}
+      }
+
+      // =========================================================================
+      // 8. WEBRTC P2P DATACHANNEL & CLOUDFLARE DURABLE OBJECT RELAY
+      // =========================================================================
+      function closeWebRTC() {
+        rtcOpen = false;
+        if (rtcChannel) {
+          try { rtcChannel.close(); } catch (_) {}
+          rtcChannel = null;
+        }
+        if (rtcPeer) {
+          try { rtcPeer.close(); } catch (_) {}
+          rtcPeer = null;
+        }
+      }
+
+      function setupRtcDataChannel(channel) {
+        rtcChannel = channel;
+        rtcChannel.binaryType = "arraybuffer";
+        rtcChannel.onopen = () => {
+          rtcOpen = true;
+          updateNetworkUI();
+          showToast("⚡ Direct WebRTC P2P Fast-Path Connected!");
+        };
+        rtcChannel.onclose = () => {
+          rtcOpen = false;
+          updateNetworkUI();
+        };
+        rtcChannel.onmessage = (ev) => {
+          if (ev.data instanceof ArrayBuffer) {
+            handlePeerDataFrame(new Uint8Array(ev.data));
+          }
+        };
+      }
+
+      async function initiateWebRTC(isPolite) {
+        closeWebRTC();
+        try {
+          rtcPeer = new RTCPeerConnection({
+            iceServers: [
+              { urls: "stun:stun.cloudflare.com:3478" },
+              { urls: "stun:stun.l.google.com:19302" },
+            ],
+          });
+
+          rtcPeer.onicecandidate = (ev) => {
+            if (ev.candidate) {
+              sendReliablePeerPacket(PKT_SIGNAL, { candidate: ev.candidate });
+            }
+          };
+
+          if (!isPolite) {
+            // Host creates the low-latency unreliable/unordered input DataChannel
+            const dc = rtcPeer.createDataChannel("metalslug-coop", {
+              ordered: false,
+              maxRetransmits: 0,
+            });
+            setupRtcDataChannel(dc);
+            const offer = await rtcPeer.createOffer();
+            await rtcPeer.setLocalDescription(offer);
+            sendReliablePeerPacket(PKT_SIGNAL, { desc: rtcPeer.localDescription });
+          } else {
+            rtcPeer.ondatachannel = (ev) => {
+              setupRtcDataChannel(ev.channel);
+            };
+          }
+        } catch (_) {}
+      }
+
+      async function handleWebRTCSignal(sig) {
+        try {
+          if (!rtcPeer) {
+            await initiateWebRTC(true);
+          }
+          if (sig.desc) {
+            await rtcPeer.setRemoteDescription(sig.desc);
+            if (sig.desc.type === "offer") {
+              const answer = await rtcPeer.createAnswer();
+              await rtcPeer.setLocalDescription(answer);
+              sendReliablePeerPacket(PKT_SIGNAL, { desc: rtcPeer.localDescription });
+            }
+          } else if (sig.candidate) {
+            await rtcPeer.addIceCandidate(sig.candidate);
+          }
+        } catch (_) {}
+      }
+
+      function getRelayHttpBase() {
+        const custom = (window.METALSLUG_RELAY_URL || "").trim().replace(/\/+$/, "");
+        if (custom) return custom;
+        return window.location.origin;
+      }
+
+      function getRelayWsUrl(port, name, game, role) {
+        const httpBase = getRelayHttpBase();
+        const wsBase = httpBase.replace(/^http/i, "ws");
+        const params = new URLSearchParams({
+          room: String(port),
+          name: name || `Mission #${port}`,
+          game: game || currentGame,
+          role: role || "auto",
+        });
+        return `${wsBase}/?${params.toString()}`;
+      }
+
+      function disconnectRoom(notify = true) {
+        if (pingInterval) {
+          clearInterval(pingInterval);
+          pingInterval = null;
+        }
+        closeWebRTC();
+        if (ws) {
+          try { ws.onclose = null; ws.close(); } catch (_) {}
+          ws = null;
+        }
+        myRole = 0;
+        roomPort = null;
+        peerConnected = false;
+        peerReady = false;
+        coopLocked = false;
+        syncInProgress = false;
+        rttMs = 0;
+        updateNetworkUI();
+        if (notify) showToast("Disconnected from Online Co-op Room.");
+      }
+
+      function connectToRoom(port, name, role = "auto") {
+        disconnectRoom(false);
+        roomPort = port;
+        roomName = name || `Mission #${port}`;
+        myRole = role === "client" ? 2 : 1;
+        updateNetworkUI();
+
+        const wsUrl = getRelayWsUrl(port, roomName, currentGame, role);
+        ws = new WebSocket(wsUrl);
+        ws.binaryType = "arraybuffer";
+
+        ws.onopen = () => {
+          updateNetworkUI();
+          pingInterval = setInterval(() => {
+            if (peerConnected && ws && ws.readyState === WebSocket.OPEN) {
+              const buf = new ArrayBuffer(10);
+              const view = new DataView(buf);
+              view.setUint8(0, FRAME_DATA);
+              view.setUint8(1, PKT_PING);
+              view.setFloat64(2, performance.now(), true);
+              ws.send(new Uint8Array(buf));
+            }
+          }, 2000);
+        };
+
+        ws.onmessage = (ev) => {
+          if (!(ev.data instanceof ArrayBuffer)) return;
+          const bytes = new Uint8Array(ev.data);
+          if (bytes.length < 1) return;
+          const frameType = bytes[0];
+
+          if (frameType === FRAME_DATA) {
+            handlePeerDataFrame(bytes);
+            return;
+          }
+
+          if (frameType === FRAME_HOST_ASSIGNED) {
+            myRole = bytes[1] || 1;
+            updateNetworkUI();
+            const roleTitle = myRole === 1 ? "Player 1 (Host)" : "Player 2 (Client)";
+            showToast(`Joined Room #${roomPort} as ${roleTitle}`);
+            return;
+          }
+
+          if (frameType === FRAME_ROOM_INFO) {
+            try {
+              const info = JSON.parse(new TextDecoder().decode(bytes.subarray(1)));
+              roomName = info.name || roomName;
+              if (info.role) myRole = info.role;
+              if (myRole === 2 && info.game && info.game !== currentGame) {
+                showToast(`Switching to Host's game: ${GAME_TITLES[info.game]}`);
+                bootGame(info.game);
+              }
+              updateNetworkUI();
+            } catch (_) {}
+            return;
+          }
+
+          if (frameType === FRAME_PEER_CONNECTED) {
+            peerConnected = true;
+            peerReady = false;
+            coopLocked = false;
+            updateNetworkUI();
+            showToast("🤝 Co-op Partner Connected! Synchronizing Neo Geo state...");
+
+            if (myRole === 1) {
+              initiateWebRTC(false);
+            }
+            if (emulatorReady) {
+              sendReliablePeerPacket(PKT_READY, { game: currentGame });
+            }
+            return;
+          }
+
+          if (frameType === FRAME_PEER_DISCONNECTED) {
+            peerConnected = false;
+            peerReady = false;
+            coopLocked = false;
+            syncInProgress = false;
+            closeWebRTC();
+            updateNetworkUI();
+            showToast("⚠️ Co-op Partner Disconnected.");
+            return;
+          }
+
+          if (frameType === FRAME_REJECTED) {
+            const reason = new TextDecoder().decode(bytes.subarray(1));
+            showToast(`❌ ${reason || "Room connection rejected"}`);
+            disconnectRoom(false);
+          }
+        };
+
+        ws.onclose = () => {
+          if (myRole !== 0) {
+            showToast("⚠️ Connection to Co-op Relay closed.");
+            disconnectRoom(false);
+          }
+        };
+      }
+
+      async function handlePeerDataFrame(bytes) {
+        if (bytes.length < 2) return;
+        const pktType = bytes[1];
+
+        // 1. High-Frequency Lockstep Input Packet (14 bytes)
+        if (pktType === PKT_INPUT && bytes.length >= 14) {
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          const frameA = view.getUint32(2, true);
+          const maskA = view.getUint16(6, true);
+          const frameB = view.getUint32(8, true);
+          const maskB = view.getUint16(12, true);
+
+          const peerMap = myRole === 1 ? p2Inputs : p1Inputs;
+          peerMap.set(frameA, maskA);
+          peerMap.set(frameB, maskB);
+          if (frameA > peerLatestFrame) peerLatestFrame = frameA;
+          return;
+        }
+
+        // 2. Ping / Pong RTT Measurement
+        if (pktType === PKT_PING && bytes.length >= 10) {
+          const out = new Uint8Array(bytes);
+          out[1] = PKT_PONG;
+          if (ws && ws.readyState === WebSocket.OPEN) ws.send(out);
+          return;
+        }
+
+        if (pktType === PKT_PONG && bytes.length >= 10) {
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          const sentAt = view.getFloat64(2, true);
+          rttMs = Math.max(1, Math.round(performance.now() - sentAt));
+          // Dynamically adapt inputDelay (2 frames up to 60ms, 3 frames up to 110ms, 4 frames above)
+          inputDelay = rttMs < 65 ? 2 : rttMs < 120 ? 3 : 4;
+          updateNetworkUI();
+          return;
+        }
+
+        // 3. Peer Ready Notification
+        if (pktType === PKT_READY) {
+          try {
+            const msg = JSON.parse(new TextDecoder().decode(bytes.subarray(2)));
+            if (myRole === 1) {
+              if (msg.game && msg.game !== currentGame) {
+                // Tell client to switch to Host's active game
+                sendReliablePeerPacket(PKT_GAME_SWITCH, { game: currentGame });
+                return;
+              }
+              peerReady = true;
+              if (emulatorReady) {
+                setTimeout(() => hostBroadcastSaveState(), 150);
+              }
+            }
+          } catch (_) {}
+          return;
+        }
+
+        // 4. Host Game Switch Notification
+        if (pktType === PKT_GAME_SWITCH) {
+          try {
+            const msg = JSON.parse(new TextDecoder().decode(bytes.subarray(2)));
+            if (msg.game && msg.game !== currentGame) {
+              coopLocked = false;
+              showToast(`Host switched game to ${GAME_TITLES[msg.game]}`);
+              await bootGame(msg.game);
+            }
+          } catch (_) {}
+          return;
+        }
+
+        // 5. Save State Synchronization Stream (Host -> Client)
+        if (pktType === PKT_STATE_START) {
+          try {
+            const meta = JSON.parse(new TextDecoder().decode(bytes.subarray(2)));
+            if (meta.game && meta.game !== currentGame) {
+              await bootGame(meta.game);
+            }
+            syncInProgress = true;
+            coopLocked = false;
+            inputDelay = meta.inputDelay || 2;
+            incomingStateMeta = meta;
+            incomingStateChunks = new Array(meta.totalChunks);
+            incomingStateReceived = 0;
+            updateNetworkUI();
+          } catch (_) {}
+          return;
+        }
+
+        if (pktType === PKT_STATE_CHUNK && incomingStateMeta) {
+          const idx = bytes[2] | (bytes[3] << 8);
+          const slice = bytes.subarray(4);
+          if (!incomingStateChunks[idx]) {
+            incomingStateChunks[idx] = new Uint8Array(slice);
+            incomingStateReceived++;
+          }
+          if (incomingStateReceived >= incomingStateMeta.totalChunks) {
+            try {
+              const compBytes = new Uint8Array(incomingStateMeta.compressedSize);
+              let offset = 0;
+              for (const c of incomingStateChunks) {
+                compBytes.set(c, offset);
+                offset += c.byteLength;
+              }
+              const rawState = await gzipDecompress(compBytes);
+              loadRawSaveStateAndFlush(rawState);
+              resetNetplayQueues();
+              incomingStateMeta = null;
+              incomingStateChunks = [];
+              syncInProgress = false;
+              coopLocked = true;
+              updateNetworkUI();
+              sendReliablePeerPacket(PKT_STATE_ACK, { ok: true });
+              showToast("✅ Arcade State Synced! Press Coin & Start to join!");
+            } catch (err) {
+              console.error("Failed to apply synced state:", err);
+              syncInProgress = false;
+              updateNetworkUI();
+            }
+          }
+          return;
+        }
+
+        if (pktType === PKT_STATE_ACK) {
+          syncInProgress = false;
+          coopLocked = true;
+          updateNetworkUI();
+          showToast("✅ Player 2 Synced & Locked In at 60 FPS!");
+          return;
+        }
+
+        // 6. WebRTC Signaling
+        if (pktType === PKT_SIGNAL) {
+          try {
+            const sig = JSON.parse(new TextDecoder().decode(bytes.subarray(2)));
+            await handleWebRTCSignal(sig);
+          } catch (_) {}
+        }
+      }
+
+      // =========================================================================
+      // 9. UI EVENT BINDINGS & ROOM BROWSER
+      // =========================================================================
+      function openModal(id) {
+        document.getElementById(id)?.classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id)?.classList.remove("open");
+      }
+
+      document.querySelectorAll("[data-close]").forEach((btn) => {
+        btn.addEventListener("click", () => closeModal(btn.getAttribute("data-close")));
+      });
+
+      // Keyboard Tracking
+      window.addEventListener("keydown", (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+        syncAudioGain();
+        keysDown.add(e.code);
+        if (
+          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "Backspace", "Enter"].includes(e.key)
+        ) {
+          e.preventDefault();
+        }
+      });
+
+      window.addEventListener("keyup", (e) => {
+        keysDown.delete(e.code);
+      });
+
+      window.addEventListener("blur", () => {
+        keysDown.clear();
+      });
+
+      // Touch Controls
+      document.querySelectorAll(".touch-btn").forEach((btn) => {
+        const bit = Number.parseInt(btn.getAttribute("data-bit"), 10);
+        const press = (e) => {
+          e.preventDefault();
+          touchMask |= 1 << bit;
+          btn.classList.add("pressed");
+        };
+        const release = (e) => {
+          e.preventDefault();
+          touchMask &= ~(1 << bit);
+          btn.classList.remove("pressed");
+        };
+        btn.addEventListener("pointerdown", press);
+        btn.addEventListener("pointerup", release);
+        btn.addEventListener("pointercancel", release);
+        btn.addEventListener("pointerleave", release);
+      });
+
+      // Top-Bar Buttons
+      elGameSelect.addEventListener("change", async () => {
+        const nextGame = elGameSelect.value;
+        if (nextGame === currentGame) return;
+        if (myRole === 2 && peerConnected) {
+          elGameSelect.value = currentGame;
+          showToast("Only Player 1 (Host) can switch games during Co-op.");
+          return;
+        }
+        await bootGame(nextGame);
+        if (myRole === 1 && ws && ws.readyState === WebSocket.OPEN) {
+          // Update room metadata on relay hub & notify Player 2
+          const metaBytes = new TextEncoder().encode(JSON.stringify({ name: roomName, game: currentGame }));
+          const frame = new Uint8Array(1 + metaBytes.length);
+          frame[0] = FRAME_UPDATE_ROOM;
+          frame.set(metaBytes, 1);
+          ws.send(frame);
+          if (peerConnected) {
+            coopLocked = false;
+            sendReliablePeerPacket(PKT_GAME_SWITCH, { game: currentGame });
+          }
+        }
+      });
+
+      document.getElementById("btn-coin").addEventListener("click", () => {
+        syncAudioGain();
+        pulseCoinFramesP1 = 6;
+        if (myRole === 0) pulseCoinFramesP2 = 6;
+        showToast("🪙 Coin Inserted!");
+        document.getElementById("canvas")?.focus();
+      });
+
+      document.getElementById("btn-start-p1").addEventListener("click", () => {
+        syncAudioGain();
+        pulseStartFramesP1 = 6;
+        document.getElementById("canvas")?.focus();
+      });
+
+      document.getElementById("btn-host").addEventListener("click", () => {
+        const randPort = Math.floor(1000 + Math.random() * 8999);
+        document.getElementById("host-room-port").value = String(roomPort || randPort);
+        if (!document.getElementById("host-room-name").value) {
+          document.getElementById("host-room-name").value = `${GAME_TITLES[currentGame].split(" (")[0]} Co-op`;
+        }
+        openModal("modal-host");
+      });
+
+      document.getElementById("btn-confirm-host").addEventListener("click", () => {
+        const port = Number.parseInt(document.getElementById("host-room-port").value, 10) || 7777;
+        const name = document.getElementById("host-room-name").value.trim() || `Mission #${port}`;
+        closeModal("modal-host");
+        connectToRoom(port, name, "host");
+        copyInviteLink(port);
+      });
+
+      document.getElementById("btn-join").addEventListener("click", () => {
+        openModal("modal-join");
+      });
+
+      document.getElementById("btn-confirm-join").addEventListener("click", () => {
+        const port = Number.parseInt(document.getElementById("join-room-port").value, 10) || 7777;
+        closeModal("modal-join");
+        connectToRoom(port, "", "client");
+      });
+
+      function copyInviteLink(portOverride) {
+        const p = portOverride || roomPort;
+        if (!p) return;
+        const inviteUrl = new URL(window.location.href);
+        inviteUrl.searchParams.set("game", currentGame);
+        inviteUrl.searchParams.set("room", String(p));
+        navigator.clipboard?.writeText(inviteUrl.toString()).catch(() => {});
+        showToast(`📋 Copied Co-op Invite Link for Room #${p}!`);
+      }
+
+      elBtnInvite.addEventListener("click", () => copyInviteLink());
+      elBtnResync.addEventListener("click", () => hostBroadcastSaveState());
+      elBtnLeave.addEventListener("click", () => disconnectRoom(true));
+
+      async function refreshRoomList() {
+        const listEl = document.getElementById("room-list");
+        listEl.innerHTML = `<div style="text-align:center; padding:18px; color:var(--text-muted);">Scanning active rooms...</div>`;
+        try {
+          const res = await fetch(`${getRelayHttpBase()}/api/rooms`, { cache: "no-store" });
+          const data = await res.json();
+          const rooms = data.rooms || [];
+          if (rooms.length === 0) {
+            listEl.innerHTML = `<div style="text-align:center; padding:22px; color:var(--text-muted);">No open missions right now. Click <strong>Host Co-op</strong> to start one!</div>`;
+            return;
+          }
+          listEl.innerHTML = "";
+          for (const r of rooms) {
+            const item = document.createElement("div");
+            item.className = "room-item";
+            const gameLabel = GAME_TITLES[r.game] || r.game;
+            const full = r.playerCount >= (r.maxPlayers || 2);
+            item.innerHTML = `
+              <div class="room-meta">
+                <div class="room-name">${r.name} <span style="color:var(--accent-gold); font-size:11.5px;">#${r.port}</span></div>
+                <div class="room-sub">${gameLabel} • ${r.playerCount}/${r.maxPlayers || 2} Players</div>
+              </div>
+            `;
+            const joinBtn = document.createElement("button");
+            joinBtn.className = full ? "bar-btn" : "bar-btn primary";
+            joinBtn.disabled = full;
+            joinBtn.textContent = full ? "Full (2/2)" : "Join P2";
+            joinBtn.addEventListener("click", () => {
+              closeModal("modal-browse");
+              connectToRoom(r.port, r.name, "client");
+            });
+            item.appendChild(joinBtn);
+            listEl.appendChild(item);
+          }
+        } catch (err) {
+          listEl.innerHTML = `<div style="text-align:center; padding:18px; color:var(--accent-red);">Could not reach Relay Hub (${err.message}).</div>`;
+        }
+      }
+
+      document.getElementById("btn-browse").addEventListener("click", () => {
+        openModal("modal-browse");
+        refreshRoomList();
+      });
+      document.getElementById("btn-refresh-rooms").addEventListener("click", refreshRoomList);
+
+      // CRT Scanlines Toggle
+      const elCrtOverlay = document.getElementById("crt-overlay");
+      const elBtnCrt = document.getElementById("btn-crt");
+      elBtnCrt.addEventListener("click", () => {
+        const enabled = elCrtOverlay.classList.toggle("enabled");
+        elBtnCrt.classList.toggle("active-toggle", enabled);
+      });
+
+      // Audio Mute Toggle
+      const elBtnMute = document.getElementById("btn-mute");
+      elBtnMute.addEventListener("click", () => {
+        audioMuted = !audioMuted;
+        elBtnMute.textContent = audioMuted ? "🔇 Muted" : "🔊 Audio";
+        elBtnMute.classList.toggle("danger", audioMuted);
+        syncAudioGain();
+      });
+
+      // Touch Controls Toggle
+      const elTouchControls = document.getElementById("touch-controls");
+      const elBtnTouch = document.getElementById("btn-touch");
+      elBtnTouch.addEventListener("click", () => {
+        const vis = elTouchControls.classList.toggle("visible");
+        elBtnTouch.classList.toggle("active-toggle", vis);
+      });
+
+      // Controls Modal
+      document.getElementById("btn-controls").addEventListener("click", () => {
+        openModal("modal-controls");
+      });
+
+      // Fullscreen Toggle
+      document.getElementById("btn-fullscreen").addEventListener("click", () => {
+        const stage = document.getElementById("stage");
+        if (!document.fullscreenElement) {
+          stage.requestFullscreen?.().catch(() => {});
+        } else {
+          document.exitFullscreen?.().catch(() => {});
+        }
+      });
+
+      // =========================================================================
+      // 10. INITIAL BOOT & AUTO-JOIN FROM INVITE URL
+      // =========================================================================
+      (async () => {
+        await bootGame(currentGame);
+        const invitePort = Number.parseInt(urlParams.get("room") || "", 10);
+        if (invitePort >= 1024 && invitePort <= 65535) {
+          connectToRoom(invitePort, "", "auto");
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
