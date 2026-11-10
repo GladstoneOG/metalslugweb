@@ -2,6 +2,7 @@
 name = "metalslugweb"
 main = "cloudflare_worker.js"
 compatibility_date = "2024-11-01"
+workers_dev = true
 
 # Static game assets (HTML, WASM core, Neo Geo ROMs, artwork)
 # Every file in ./public is <19 MiB to stay well under Cloudflare Workers' 25 MiB per-file limit
