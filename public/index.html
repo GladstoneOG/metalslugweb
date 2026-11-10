@@ -488,16 +488,121 @@
       color: #f8fafc;
     }
 
+    /* Top Bar Hidden state for Mobile & Fullscreen */
+    body.top-bar-hidden #top-bar {
+      display: none !important;
+    }
+    body.top-bar-hidden #stage {
+      height: 100vh !important;
+      height: 100dvh !important;
+    }
+    body.top-bar-hidden #cabinet-frame {
+      max-width: calc(100vh * (4 / 3));
+      max-width: calc(100dvh * (4 / 3));
+      max-height: calc(100vw * (3 / 4));
+    }
+
+    /* Floating Pill to Restore Top Bar when Hidden */
+    #btn-show-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 35;
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(255, 187, 51, 0.5);
+      color: var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      transition: all 0.15s ease;
+    }
+    #btn-show-bar:hover {
+      background: rgba(30, 41, 59, 0.95);
+      border-color: #fbbf24;
+      transform: translateY(-1px);
+    }
+    body.top-bar-hidden #btn-show-bar {
+      display: inline-flex;
+    }
+
+    /* Mobile Rotate to Landscape Prompt Overlay */
+    #rotate-prompt {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(6, 8, 12, 0.94);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    #rotate-prompt.active {
+      display: flex;
+    }
+    .rotate-card {
+      background: rgba(17, 22, 34, 0.96);
+      border: 1px solid rgba(255, 187, 51, 0.55);
+      border-radius: 18px;
+      padding: 28px 24px;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .rotate-icon {
+      font-size: 44px;
+      line-height: 1;
+      margin-bottom: 14px;
+      animation: rotateAnim 2.2s ease-in-out infinite;
+    }
+    @keyframes rotateAnim {
+      0%, 100% { transform: rotate(0deg); }
+      45%, 55% { transform: rotate(90deg); }
+    }
+    .rotate-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .rotate-desc {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.45;
+      margin-bottom: 20px;
+    }
+    .rotate-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
     /* Touch Controls Overlay */
     #touch-controls {
       position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 20;
+      z-index: 25;
       display: none;
       justify-content: space-between;
       align-items: flex-end;
-      padding: 20px;
+      padding: 16px 20px;
+      touch-action: none;
     }
     #touch-controls.visible {
       display: flex;
@@ -505,31 +610,151 @@
     .touch-cluster {
       pointer-events: auto;
       display: grid;
-      gap: 8px;
+      gap: 6px;
+      touch-action: none;
     }
+
+    /* 8-Way Ergonomic D-Pad */
     .dpad-cluster {
-      grid-template-columns: repeat(3, 52px);
-      grid-template-rows: repeat(3, 52px);
+      grid-template-columns: repeat(3, 54px);
+      grid-template-rows: repeat(3, 54px);
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 187, 51, 0.25);
+      border-radius: 20px;
+      padding: 4px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      user-select: none;
+      -webkit-user-select: none;
     }
+    .dpad-center-hub {
+      background: rgba(30, 41, 59, 0.6);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 187, 51, 0.3);
+    }
+    .dpad-corner {
+      opacity: 0.65;
+      font-size: 11px !important;
+    }
+
+    /* Arcade Action Buttons Cluster */
     .btn-cluster {
-      grid-template-columns: repeat(2, 58px);
-      grid-template-rows: repeat(2, 58px);
+      grid-template-columns: repeat(2, 64px);
+      grid-template-rows: repeat(2, 64px);
+      gap: 10px;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(255, 187, 51, 0.25);
+      border-radius: 24px;
+      padding: 8px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      user-select: none;
+      -webkit-user-select: none;
     }
+
     .touch-btn {
-      background: rgba(15, 23, 42, 0.68);
-      border: 2px solid rgba(255, 187, 51, 0.55);
-      border-radius: 12px;
+      background: rgba(20, 27, 41, 0.82);
+      border: 2px solid rgba(255, 187, 51, 0.45);
+      border-radius: 14px;
       color: #fff;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 15px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.08s ease, background 0.08s ease;
     }
     .touch-btn.pressed {
-      background: rgba(255, 187, 51, 0.45);
-      transform: scale(0.95);
+      transform: scale(0.92);
+      filter: brightness(1.3);
+    }
+
+    /* Neo Geo Authentic Button Styling */
+    .arcade-btn {
+      border-radius: 50% !important;
+      position: relative;
+    }
+    .arcade-btn .btn-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+    .arcade-btn .btn-code {
+      font-size: 11px;
+      font-weight: 900;
+      margin-top: 2px;
+      opacity: 0.9;
+    }
+    /* Button A: Red Fire */
+    .btn-a {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.8), rgba(185, 28, 28, 0.85)) !important;
+      border-color: #fca5a5 !important;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+    /* Button B: Yellow Jump */
+    .btn-b {
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.8), rgba(161, 98, 7, 0.85)) !important;
+      border-color: #fde047 !important;
+      box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+    }
+    /* Button C: Green Bomb */
+    .btn-c {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.8), rgba(21, 128, 61, 0.85)) !important;
+      border-color: #86efac !important;
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+    }
+    /* Button D: Blue Slug */
+    .btn-d {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(29, 78, 216, 0.85)) !important;
+      border-color: #93c5fd !important;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Auxiliary Mobile Buttons (Coin & Start) */
+    .touch-aux-bar {
+      display: flex !important;
+      flex-direction: row;
+      gap: 12px;
+      align-self: flex-start;
+      margin-top: 10px;
+    }
+    .touch-aux-btn {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(255, 187, 51, 0.5);
+      border-radius: 999px;
+      color: #fde047;
+      font-weight: 800;
+      font-size: 11.5px;
+      padding: 6px 14px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      touch-action: none;
+      white-space: nowrap;
+    }
+    .touch-aux-btn.start {
+      border-color: rgba(46, 213, 115, 0.6);
+      color: #86efac;
+    }
+    .touch-aux-btn:active {
+      transform: scale(0.94);
+    }
+
+    @media (max-width: 768px) {
+      .dpad-cluster {
+        grid-template-columns: repeat(3, 46px);
+        grid-template-rows: repeat(3, 46px);
+      }
+      .btn-cluster {
+        grid-template-columns: repeat(2, 56px);
+        grid-template-rows: repeat(2, 56px);
+      }
+      #touch-controls {
+        padding: 10px 12px;
+      }
     }
   </style>
   <script src="relay_config.js"></script>
@@ -602,35 +827,22 @@
       <button id="btn-fullscreen" class="bar-btn" title="Toggle Fullscreen Cabinet Mode">
         ⛶ Fullscreen
       </button>
+      <button id="btn-toggle-topbar" class="bar-btn" title="Hide Top Utility Bar for Max Screen Area">
+        ▲ Hide Bar
+      </button>
     </div>
   </header>
 
   <!-- Main Neo Geo 4:3 Viewport -->
   <main id="stage">
+    <!-- Quick Access Floating Pill when Top Bar is Hidden -->
+    <button id="btn-show-bar" title="Show Top Menu Bar">
+      ⚙️ Menu
+    </button>
+
     <div id="cabinet-frame">
       <canvas id="canvas" width="304" height="224" tabindex="0"></canvas>
       <div id="crt-overlay" class="enabled"></div>
-
-      <!-- Touch Controller Overlay -->
-      <div id="touch-controls">
-        <div class="touch-cluster dpad-cluster">
-          <div></div>
-          <div class="touch-btn" data-bit="4">▲</div>
-          <div></div>
-          <div class="touch-btn" data-bit="6">◀</div>
-          <div></div>
-          <div class="touch-btn" data-bit="7">▶</div>
-          <div></div>
-          <div class="touch-btn" data-bit="5">▼</div>
-          <div></div>
-        </div>
-        <div class="touch-cluster btn-cluster">
-          <div class="touch-btn" data-bit="1">💣 C</div>
-          <div class="touch-btn" data-bit="9">🚜 D</div>
-          <div class="touch-btn" data-bit="0">🔫 A</div>
-          <div class="touch-btn" data-bit="8">🦘 B</div>
-        </div>
-      </div>
 
       <!-- Boot / ROM Loading Overlay -->
       <div id="loading-overlay">
@@ -645,6 +857,51 @@
             <div id="boot-progress" class="progress-fill"></div>
           </div>
           <div id="boot-detail" class="boot-detail">Checking IndexedDB cache...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Touch Controller Overlay (spans full viewport so buttons sit in side pillars on mobile landscape) -->
+    <div id="touch-controls">
+      <div class="touch-cluster dpad-cluster" id="dpad-box">
+        <div class="touch-btn dpad-corner" data-dir="ul">↖</div>
+        <div class="touch-btn dpad-cardinal" data-dir="u" data-bit="4">▲</div>
+        <div class="touch-btn dpad-corner" data-dir="ur">↗</div>
+        <div class="touch-btn dpad-cardinal" data-dir="l" data-bit="6">◀</div>
+        <div class="dpad-center-hub"></div>
+        <div class="touch-btn dpad-cardinal" data-dir="r" data-bit="7">▶</div>
+        <div class="touch-btn dpad-corner" data-dir="dl">↙</div>
+        <div class="touch-btn dpad-cardinal" data-dir="d" data-bit="5">▼</div>
+        <div class="touch-btn dpad-corner" data-dir="dr">↘</div>
+      </div>
+
+      <!-- Quick Auxiliary Controls for Mobile (Coin & Start) -->
+      <div class="touch-cluster touch-aux-bar">
+        <button id="touch-btn-coin" class="touch-aux-btn" title="Insert Coin">
+          🟡 COIN
+        </button>
+        <button id="touch-btn-start" class="touch-aux-btn start" title="Start Game">
+          ▶ START
+        </button>
+      </div>
+
+      <!-- Action Buttons Cluster (Neo Geo Authentic Colors) -->
+      <div class="touch-cluster btn-cluster">
+        <div class="touch-btn arcade-btn btn-c" data-bit="1" title="Grenade / Bomb (C)">
+          <span class="btn-icon">💣</span>
+          <span class="btn-code">C</span>
+        </div>
+        <div class="touch-btn arcade-btn btn-d" data-bit="9" title="Slug Attack / Eject (D)">
+          <span class="btn-icon">🚜</span>
+          <span class="btn-code">D</span>
+        </div>
+        <div class="touch-btn arcade-btn btn-a" data-bit="0" title="Fire Weapon (A)">
+          <span class="btn-icon">🔫</span>
+          <span class="btn-code">A</span>
+        </div>
+        <div class="touch-btn arcade-btn btn-b" data-bit="8" title="Jump (B)">
+          <span class="btn-icon">🦘</span>
+          <span class="btn-code">B</span>
         </div>
       </div>
     </div>
@@ -755,6 +1012,25 @@
       </div>
       <div style="display:flex; justify-content:flex-end;">
         <button class="bar-btn primary" data-close="modal-controls">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Rotate to Landscape Prompt -->
+  <div id="rotate-prompt">
+    <div class="rotate-card">
+      <div class="rotate-icon">📱 ↷</div>
+      <div class="rotate-title">Rotate to Landscape</div>
+      <div class="rotate-desc">
+        Metal Slug is designed for a horizontal 4:3 arcade screen. Rotate your device sideways for the best view and responsive touch controls!
+      </div>
+      <div class="rotate-actions">
+        <button id="btn-rotate-fullscreen" class="bar-btn primary" style="font-size:13.5px; padding:10px 18px; justify-content:center;">
+          ⛶ Fullscreen & Play
+        </button>
+        <button id="btn-rotate-dismiss" class="bar-btn" style="font-size:12px; padding:8px 14px; justify-content:center;">
+          Continue in Portrait
+        </button>
       </div>
     </div>
   </div>
@@ -1986,23 +2262,108 @@
         keysDown.clear();
       });
 
-      // Touch Controls
-      document.querySelectorAll(".touch-btn").forEach((btn) => {
-        const bit = Number.parseInt(btn.getAttribute("data-bit"), 10);
-        const press = (e) => {
+      // Touch Controls — 8-Way Ergonomic D-Pad
+      const dpadBox = document.getElementById("dpad-box");
+      let dpadPointerId = null;
+
+      function updateDpadFromPoint(clientX, clientY) {
+        if (!dpadBox) return;
+        const rect = dpadBox.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = clientX - cx;
+        const dy = clientY - cy;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < 12) {
+          touchMask &= ~(0xf0);
+          dpadBox.querySelectorAll(".touch-btn").forEach(b => b.classList.remove("pressed"));
+          return;
+        }
+
+        let newMask = 0;
+        if (Math.abs(dx) > dist * 0.36) {
+          if (dx < 0) newMask |= 1 << 6; // Left
+          else newMask |= 1 << 7;        // Right
+        }
+        if (Math.abs(dy) > dist * 0.36) {
+          if (dy < 0) newMask |= 1 << 4; // Up
+          else newMask |= 1 << 5;        // Down
+        }
+
+        touchMask = (touchMask & ~0xf0) | newMask;
+
+        dpadBox.querySelectorAll(".touch-btn").forEach(btn => {
+          const bit = Number.parseInt(btn.getAttribute("data-bit") || "0", 10);
+          const dir = btn.getAttribute("data-dir") || "";
+          let active = false;
+          if (bit && (newMask & (1 << bit))) active = true;
+          if (dir === "ul" && (newMask & ((1<<4)|(1<<6))) === ((1<<4)|(1<<6))) active = true;
+          if (dir === "ur" && (newMask & ((1<<4)|(1<<7))) === ((1<<4)|(1<<7))) active = true;
+          if (dir === "dl" && (newMask & ((1<<5)|(1<<6))) === ((1<<5)|(1<<6))) active = true;
+          if (dir === "dr" && (newMask & ((1<<5)|(1<<7))) === ((1<<5)|(1<<7))) active = true;
+          btn.classList.toggle("pressed", active);
+        });
+      }
+
+      dpadBox?.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        dpadPointerId = e.pointerId;
+        dpadBox.setPointerCapture?.(e.pointerId);
+        updateDpadFromPoint(e.clientX, e.clientY);
+        navigator.vibrate?.(10);
+      });
+
+      dpadBox?.addEventListener("pointermove", (e) => {
+        if (dpadPointerId === e.pointerId) {
           e.preventDefault();
+          updateDpadFromPoint(e.clientX, e.clientY);
+        }
+      });
+
+      const releaseDpad = (e) => {
+        if (dpadPointerId === e.pointerId) {
+          e.preventDefault();
+          dpadPointerId = null;
+          touchMask &= ~(0xf0);
+          dpadBox.querySelectorAll(".touch-btn").forEach(b => b.classList.remove("pressed"));
+        }
+      };
+      dpadBox?.addEventListener("pointerup", releaseDpad);
+      dpadBox?.addEventListener("pointercancel", releaseDpad);
+
+      // Action Buttons (Neo Geo A/B/C/D)
+      document.querySelectorAll(".btn-cluster .touch-btn").forEach((btn) => {
+        const bit = Number.parseInt(btn.getAttribute("data-bit"), 10);
+        btn.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          btn.setPointerCapture?.(e.pointerId);
           touchMask |= 1 << bit;
           btn.classList.add("pressed");
-        };
-        const release = (e) => {
+          navigator.vibrate?.(12);
+        });
+        const releaseBtn = (e) => {
           e.preventDefault();
           touchMask &= ~(1 << bit);
           btn.classList.remove("pressed");
         };
-        btn.addEventListener("pointerdown", press);
-        btn.addEventListener("pointerup", release);
-        btn.addEventListener("pointercancel", release);
-        btn.addEventListener("pointerleave", release);
+        btn.addEventListener("pointerup", releaseBtn);
+        btn.addEventListener("pointercancel", releaseBtn);
+      });
+
+      // Auxiliary Touch Buttons (Coin & Start)
+      document.getElementById("touch-btn-coin")?.addEventListener("click", () => {
+        syncAudioGain();
+        pulseCoinFramesP1 = 6;
+        if (myRole === 0) pulseCoinFramesP2 = 6;
+        showToast("🟡 Coin Inserted!");
+        navigator.vibrate?.(16);
+      });
+
+      document.getElementById("touch-btn-start")?.addEventListener("click", () => {
+        syncAudioGain();
+        pulseStartFramesP1 = 6;
+        navigator.vibrate?.(16);
       });
 
       // Top-Bar Buttons
@@ -2168,6 +2529,71 @@
           document.exitFullscreen?.().catch(() => {});
         }
       });
+
+      // =========================================================================
+      // MOBILE VIEWPORT, ORIENTATION & TOP BAR TOGGLE
+      // =========================================================================
+      let isPortraitDismissed = false;
+
+      function isMobileOrCoarse() {
+        return (
+          window.matchMedia("(pointer: coarse)").matches ||
+          window.matchMedia("(max-width: 920px)").matches ||
+          /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+        );
+      }
+
+      function updateOrientationPrompt() {
+        if (!isMobileOrCoarse()) {
+          document.getElementById("rotate-prompt")?.classList.remove("active");
+          return;
+        }
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const promptEl = document.getElementById("rotate-prompt");
+        if (isPortrait && !isPortraitDismissed) {
+          promptEl?.classList.add("active");
+        } else {
+          promptEl?.classList.remove("active");
+        }
+      }
+
+      window.addEventListener("resize", updateOrientationPrompt);
+      window.addEventListener("orientationchange", updateOrientationPrompt);
+      if (screen.orientation?.addEventListener) {
+        screen.orientation.addEventListener("change", updateOrientationPrompt);
+      }
+
+      document.getElementById("btn-rotate-fullscreen")?.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen?.();
+          }
+          await screen.orientation?.lock?.("landscape").catch(() => {});
+        } catch (_) {}
+        setTopBarHidden(true);
+        document.getElementById("rotate-prompt")?.classList.remove("active");
+        isPortraitDismissed = true;
+      });
+
+      document.getElementById("btn-rotate-dismiss")?.addEventListener("click", () => {
+        isPortraitDismissed = true;
+        document.getElementById("rotate-prompt")?.classList.remove("active");
+      });
+
+      // Top Bar Toggle Handlers
+      function setTopBarHidden(hidden) {
+        document.body.classList.toggle("top-bar-hidden", hidden);
+      }
+
+      document.getElementById("btn-toggle-topbar")?.addEventListener("click", () => setTopBarHidden(true));
+      document.getElementById("btn-show-bar")?.addEventListener("click", () => setTopBarHidden(false));
+
+      // Auto-enable touch controls & check orientation on mobile devices
+      if (isMobileOrCoarse()) {
+        document.getElementById("touch-controls")?.classList.add("visible");
+        document.getElementById("btn-touch")?.classList.add("active-toggle");
+        updateOrientationPrompt();
+      }
 
       // =========================================================================
       // 10. INITIAL BOOT & AUTO-JOIN FROM INVITE URL
